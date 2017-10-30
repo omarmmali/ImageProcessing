@@ -22,6 +22,8 @@ newW = maxX - minX;
 
 %W = [W trans];
 %W = [W ; 0 0 1];
+newH = round(newH)
+newW = round(newW)
 
 result = uint8(zeros(newH,newW, L));
 
