@@ -41,10 +41,9 @@ function [end_points, short_ridges] = ExtractLandmarks(input_image, ridge_length
     [Q, N] = size(end_points);
     end_points = end_points(:, 2:N, :);
     
-    vis = zeros(H,W);
-    queue = [];
-    
     for p = 1 : N - 1
+        vis = zeros(H,W);
+        queue = [];
         queue = [end_points(:,p) queue];
         found_bifurication = 0;
         path = [];
@@ -53,10 +52,6 @@ function [end_points, short_ridges] = ExtractLandmarks(input_image, ridge_length
             vis(cur_point(1), cur_point(2)) = 1;
             queue = queue(:,2:end);
             path = [path [cur_point(1); cur_point(2)]];
-            [Q, tmp] = size(path);
-            if tmp > ridge_length
-                break;
-            end
             number_of_black_neighbors = 0;
             for j = -1 : 1
                 if (1 <= cur_point(1) + j) && (cur_point(1) + j <= H)
