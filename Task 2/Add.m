@@ -5,6 +5,7 @@ function C = Add( A,B )
 [H, W, L] = size(A);
 B = imresize(B,[H W]);
 C =A+B;
-
+C = Contrast(C , 0 , 255);
+C = uint8(C);
 end
 

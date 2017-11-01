@@ -209,8 +209,11 @@ function ScaleBtn_Callback(hObject, eventdata, handles)
 % handles    structure with handles and user data (see GUIDATA)
 scaleheight = str2double(get(handles.heighttxt,'String'));
 scalewidth = str2double(get(handles.widthtxt,'String'));
+[originalW originalH L] = size(handles.Image);
+xFactor = scalewidth / originalW;
+yFactor = scaleheight / originalH; 
 
-M = [scalewidth 0 0;0 scaleheight 0; 0 0 1];
+M = [xFactor 0 0;0 yFactor 0; 0 0 1];
 
 result = GeometricLinearTransform(handles.Image,M);
 axes(handles.Effected);

@@ -22,7 +22,7 @@ function varargout = ImageEffects2(varargin)
 
 % Edit the above text to modify the response to help ImageEffects2
 
-% Last Modified by GUIDE v2.5 09-Oct-2017 01:02:32
+% Last Modified by GUIDE v2.5 31-Oct-2017 19:46:39
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
@@ -238,18 +238,18 @@ function RotateBtn_Callback(hObject, eventdata, handles)
 
 
 
-function Scale_Callback(hObject, eventdata, handles)
-% hObject    handle to Scale (see GCBO)
+function ScaleH_Callback(hObject, eventdata, handles)
+% hObject    handle to ScaleH (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
 
-% Hints: get(hObject,'String') returns contents of Scale as text
-%        str2double(get(hObject,'String')) returns contents of Scale as a double
+% Hints: get(hObject,'String') returns contents of ScaleH as text
+%        str2double(get(hObject,'String')) returns contents of ScaleH as a double
 
 
 % --- Executes during object creation, after setting all properties.
-function Scale_CreateFcn(hObject, eventdata, handles)
-% hObject    handle to Scale (see GCBO)
+function ScaleH_CreateFcn(hObject, eventdata, handles)
+% hObject    handle to ScaleH (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    empty - handles not created until after all CreateFcns called
 
@@ -265,30 +265,34 @@ function ScaleBtn_Callback(hObject, eventdata, handles)
 % hObject    handle to ScaleBtn (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
-scaleheight = str2double(get(handles.Scale,'String'));
-scalewidth = str2double(get(handles.Scale,'String'));
+scaleheight = str2double(get(handles.ScaleH,'String'));
+scalewidth = str2double(get(handles.ScaleW,'String'));
 
-M = [scalewidth 0 0;0 scaleheight 0; 0 0 1];
+[originalW originalH L] = size(handles.Image);
+xFactor = scalewidth / originalW;
+yFactor = scaleheight / originalH; 
 
-handles.Result = GeometricLinearTransform(handles.Image,M);
+M = [xFactor 0 0;0 yFactor 0; 0 0 1];
+
+result = GeometricLinearTransform(handles.Image,M);
 axes(handles.RImg);
-imshow(handles.Result);
+imshow(result);
 
 
 
 
-function Shear_Callback(hObject, eventdata, handles)
-% hObject    handle to Shear (see GCBO)
+function ShearY_Callback(hObject, eventdata, handles)
+% hObject    handle to ShearY (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
 
-% Hints: get(hObject,'String') returns contents of Shear as text
-%        str2double(get(hObject,'String')) returns contents of Shear as a double
+% Hints: get(hObject,'String') returns contents of ShearY as text
+%        str2double(get(hObject,'String')) returns contents of ShearY as a double
 
 
 % --- Executes during object creation, after setting all properties.
-function Shear_CreateFcn(hObject, eventdata, handles)
-% hObject    handle to Shear (see GCBO)
+function ShearY_CreateFcn(hObject, eventdata, handles)
+% hObject    handle to ShearY (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    empty - handles not created until after all CreateFcns called
 
@@ -304,7 +308,7 @@ function ShearBtn_Callback(hObject, eventdata, handles)
 % hObject    handle to ShearBtn (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
-M = [1 str2double(get(handles.Shear,'String')) 0;str2double(get(handles.Shear,'String')) 1 0; 0 0 1];
+M = [1 str2double(get(handles.ShearX,'String')) 0;str2double(get(handles.ShearY,'String')) 1 0; 0 0 1];
 handles.Result =  GeometricLinearTransform(handles.Image,M);
 axes(handles.RImg);
 imshow(handles.Result);
@@ -315,6 +319,31 @@ function allBtn_Callback(hObject, eventdata, handles)
 % hObject    handle to allBtn (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
+%Apply Rotate
+seta = str2double(get(handles.Rotate,'String'));
+M = [cosd(seta) sind(seta) 0;-sind(seta) cosd(seta) 0; 0 0 1];
+
+handles.Result = GeometricLinearTransform(handles.Image,M);
+
+%apply Scale
+scaleheight = str2double(get(handles.ScaleH,'String'));
+scalewidth = str2double(get(handles.ScaleW,'String'));
+
+[originalW originalH L] = size(handles.Image);
+xFactor = scalewidth / originalW;
+yFactor = scaleheight / originalH; 
+
+M = [xFactor 0 0;0 yFactor 0; 0 0 1];
+
+handles.Result = GeometricLinearTransform(handles.Result,M);
+%apply Shear
+M = [1 str2double(get(handles.ShearX,'String')) 0;str2double(get(handles.ShearY,'String')) 1 0; 0 0 1];
+handles.Result =  GeometricLinearTransform(handles.Result,M);
+
+axes(handles.RImg);
+imshow(handles.Result);
+
+
 
 
 % --- Executes on button press in Applynot.
@@ -374,3 +403,49 @@ handles.Result = Add(image1,image2);
 
 axes(handles.RImg);
 imshow(handles.Result); 
+
+
+
+function ScaleW_Callback(hObject, eventdata, handles)
+% hObject    handle to ScaleW (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+% Hints: get(hObject,'String') returns contents of ScaleW as text
+%        str2double(get(hObject,'String')) returns contents of ScaleW as a double
+
+
+% --- Executes during object creation, after setting all properties.
+function ScaleW_CreateFcn(hObject, eventdata, handles)
+% hObject    handle to ScaleW (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    empty - handles not created until after all CreateFcns called
+
+% Hint: edit controls usually have a white background on Windows.
+%       See ISPC and COMPUTER.
+if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
+    set(hObject,'BackgroundColor','white');
+end
+
+
+
+function ShearX_Callback(hObject, eventdata, handles)
+% hObject    handle to ShearX (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+% Hints: get(hObject,'String') returns contents of ShearX as text
+%        str2double(get(hObject,'String')) returns contents of ShearX as a double
+
+
+% --- Executes during object creation, after setting all properties.
+function ShearX_CreateFcn(hObject, eventdata, handles)
+% hObject    handle to ShearX (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    empty - handles not created until after all CreateFcns called
+
+% Hint: edit controls usually have a white background on Windows.
+%       See ISPC and COMPUTER.
+if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
+    set(hObject,'BackgroundColor','white');
+end
